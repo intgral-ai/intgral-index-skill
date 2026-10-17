@@ -13,6 +13,11 @@ PUBLIC_FILES = frozenset({
     'agents/openai.yaml', 'assets/team-context.example.json',
     'references/gear-map.md', 'references/workflows.md',
     'scripts/validate.py', 'tests/test_validate.py',
+    '.codex-plugin/plugin.json', '.app.json',
+    'skills/intgral-meeting/SKILL.md', 'skills/intgral-meeting/agents/openai.yaml',
+    'skills/intgral-meeting/references/wispr.md',
+    'skills/intgral-meeting/references/archive.md',
+    'skills/intgral-meeting/references/topdown.md',
 })
 RULES = (
     ('credential token', re.compile(r'\b(?:gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}|sk-[A-Za-z0-9_-]{24,}|AKIA[A-Z0-9]{16})\b')),
@@ -89,6 +94,28 @@ def scan_history(root):
     return errors
 
 
+def check_meeting_plugin(root):
+    """Keep the packaged meeting entrypoint and required app resolvable."""
+    try:
+        manifest = json.loads((root / '.codex-plugin/plugin.json').read_text())
+        if (manifest['name'] != 'intgral-meeting'
+                or manifest['skills'] != './skills/' or manifest['apps'] != './.app.json'):
+            return ['meeting plugin: invalid entrypoints']
+        apps = json.loads((root / '.app.json').read_text())['apps']
+        wispr = apps['app-6a5ae9736be0819199d06d61ac171080']
+        if (wispr['id'] != 'asdk_app_6a5ae9736be0819199d06d61ac171080'
+                or wispr['required'] is not True):
+            return ['meeting plugin: Wispr Flow must be the required app']
+        skill = root / 'skills/intgral-meeting/SKILL.md'
+        match = re.match(r'\A---\n(.*?)\n---\n', skill.read_text(), re.DOTALL)
+        fields = dict(line.split(':', 1) for line in match[1].splitlines() if ':' in line) if match else {}
+        if fields.get('name', '').strip() != 'intgral-meeting' or not fields.get('description', '').strip():
+            return ['meeting skill: invalid name or description']
+    except (OSError, ValueError, KeyError, TypeError):
+        return ['meeting plugin: missing or invalid manifest, app dependency or skill']
+    return []
+
+
 def validate(root):
     errors = []
     paths = package_files(root)
@@ -129,6 +156,7 @@ def validate(root):
         except (ValueError, KeyError, TypeError):
             errors.append('team-context example has an invalid schema')
     errors.extend(check_links(root, paths))
+    errors.extend(check_meeting_plugin(root))
     return errors
 
 

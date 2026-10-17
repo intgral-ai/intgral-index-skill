@@ -1,0 +1,4 @@
+interface:
+  display_name: "Intgral Meeting"
+  short_description: "整理 Wispr 会议与 thoughts，归档并同步产品和工程文档"
+  default_prompt: "使用 $intgral-meeting 更新今天的 Wispr 会议与 thoughts；按需同步产品愿景、MVP 和 engineering，未确认的范围与分工标待确认。"

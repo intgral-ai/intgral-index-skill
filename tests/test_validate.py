@@ -1,7 +1,9 @@
 import importlib.util
+import json
 import subprocess
 import tempfile
 import unittest
+import shutil
 from pathlib import Path
 
 spec = importlib.util.spec_from_file_location('publication_guard', Path(__file__).resolve().parents[1] / 'scripts/validate.py')
@@ -10,6 +12,22 @@ spec.loader.exec_module(guard)
 
 
 class PublicationGuardTests(unittest.TestCase):
+    def test_meeting_package_resolves_required_wispr_app(self):
+        root = Path(__file__).resolve().parents[1]
+        self.assertEqual(guard.check_meeting_plugin(root), [])
+
+    def test_meeting_package_rejects_missing_or_optional_dependency(self):
+        source = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            shutil.copytree(source / '.codex-plugin', root / '.codex-plugin')
+            shutil.copytree(source / 'skills', root / 'skills')
+            self.assertTrue(guard.check_meeting_plugin(root))
+            dependency = {'apps': {'app-6a5ae9736be0819199d06d61ac171080': {
+                'id': 'asdk_app_6a5ae9736be0819199d06d61ac171080', 'required': False}}}
+            (root / '.app.json').write_text(json.dumps(dependency))
+            self.assertTrue(guard.check_meeting_plugin(root))
+
     def test_detects_token_without_echoing_it(self):
         token = 'ghp_' + 'a' * 36
         findings = guard.sensitive_findings('token=' + token, 'sample')

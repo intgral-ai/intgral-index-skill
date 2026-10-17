@@ -6,6 +6,30 @@
 
 调用名：`intgral-guide-skill`。仓库：https://github.com/intgral-ai/intgral-guide-skill。
 
+仓库另含 [intgral-meeting](skills/intgral-meeting/SKILL.md)：读取 Wispr Flow 会议、My thoughts 与独立笔记，查重归档，并在用户要求时从产品愿景到 MVP、engineering 更新现有文档。未确认的范围与分工保持待确认。
+
+## Meeting skill 与 Wispr 接入
+
+原有指南仍在仓库根目录；会议 skill 在 `skills/intgral-meeting/`，两者可分别安装。正式安装使用已合并的 `main`；PR 分支供评审，不覆盖已安装的稳定副本。
+
+在带有 skill-installer 的 Codex 中，合并后可直接请求：
+
+> 使用 $skill-installer，从 intgral-ai/intgral-guide-skill 的 main 安装 skills/intgral-meeting。
+
+也可将 `skills/intgral-meeting/` 完整复制到客户端的 skills 目录，保留 `references/` 和 `agents/`。安装后下一轮对话可调用 `$intgral-meeting`。
+
+在客户端连接 **Wispr Flow**，使用本人账号完成授权。仅安装 skill 不会自动安装连接器或完成 OAuth。支持 Codex plugin 的客户端可加载本仓库根目录的 [.codex-plugin/plugin.json](.codex-plugin/plugin.json)，其中通过 [.app.json](.app.json) 将官方 Wispr app 声明为必需依赖；该 manifest 不含令牌，也不代成员授权。导入入口由客户端提供。
+
+首次使用前，在私有配置或当前会话提供：归档目标、时区、来源相关性/起始范围、私有 state 路径；需要 top-down 时再指定三份现有主文档。已有项目配置则直接沿用。只在获授权的目标登录 docs，并遵守项目的浏览器设置。不要把个人配置、state、会议原文或账号凭据放入本仓库。
+
+调用示例：
+
+> 使用 $intgral-meeting，更新今天的 meeting，包含 Wispr 的 My thoughts 和独立笔记，写回现有会议档案。
+
+> 使用 $intgral-meeting，根据这三场会议从 top down 更新产品愿景、MVP 和 engineering。未确认的范围、分工和日期标待确认，保留已有确认和评论。
+
+接入验证分三步：能列出本人授权范围的会议；能完整读取一场会议的 notes/transcript；能按请求写入并重新加载目标档案。只验证连接时不要修改文档。插件导入、连接授权与写回是否成功分别报告；本仓库的静态检查不能证明客户端已连接。
+
 ## 使用
 
 将整个目录安装或复制到模型客户端支持的 skills 目录，保留 `SKILL.md`、`references/` 和 `assets/` 的相对结构；也可以把 [SKILL.md](SKILL.md) 和所需的引用文件一起交给模型。
