@@ -121,6 +121,7 @@ def validate(root):
         try:
             example = json.loads((root / 'assets/team-context.example.json').read_text())
             if (example['status'] != 'example_only' or example['workspace_root'] is not None or example['current_goal'] is not None
+                    or not isinstance(example.get('local_indexes'), dict) or any(example['local_indexes'].values())
                     or any(example['role_assignments'].values())
                     or example['approval_rules_source'] is not None or example['verified_at'] is not None
                     or any(value for key, value in example['sources'].items() if key != 'documentation_home')

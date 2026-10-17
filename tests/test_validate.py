@@ -1,4 +1,5 @@
 import importlib.util
+import json
 import subprocess
 import tempfile
 import unittest
@@ -40,6 +41,17 @@ class PublicationGuardTests(unittest.TestCase):
             root = Path(directory)
             (root / 'team-context.json').write_text('{}')
             self.assertTrue(any('outside the publication allowlist' in e for e in guard.validate(root)))
+
+    def test_example_cannot_publish_populated_local_indexes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'assets').mkdir()
+            source = Path(__file__).resolve().parents[1] / 'assets/team-context.example.json'
+            example = json.loads(source.read_text())
+            example['local_indexes']['documentation'] = 'workspace/' + 'private-doc-index.json'
+            (root / 'assets/team-context.example.json').write_text(json.dumps(example))
+            errors = guard.validate(root)
+            self.assertTrue(any('must contain no real team assignments or internal sources' in e for e in errors))
 
     def test_symlink_cannot_import_external_content(self):
         with tempfile.TemporaryDirectory() as directory:
