@@ -1,6 +1,6 @@
 ---
 name: intgral-guide-skill
-description: Help Intgral team members find sources, connect roles and tools, and identify the next action. Use for workspace navigation, planning, handoffs, meeting records, daily updates and evidence-based decision preparation; load current company facts from authorized private sources.
+description: Help Intgral team members find sources, capture research exploration, connect roles and tools, and identify the next action. Use for workspace navigation, research findings, post-meeting discussion, planning, handoffs, meeting records, daily updates and decision preparation; load current company facts from authorized private sources.
 ---
 
 # intgral-guide-skill
@@ -47,6 +47,8 @@ description: Help Intgral team members find sources, connect roles and tools, an
 会议按“日期 → 主题”组织，相关进展连接到会议内的当天执行日志与日期下的中央日志。日志是证据摘要，任务状态、实现和设计分别回到 Linear、GitHub、Figma 核对。读取私有配置的 `collaboration_policy` 和对应来源以确定实际归档时区、频率、会议节奏与决策权；skill 不自行创建定时任务。
 
 准备会议、汇总 logs 或支持 decision making 时，读取 [会议、日志与决策](references/workflows.md#会议日志与决策)。决定写回长期文档，行动连接正式任务，后续结果再成为下一次决定的输入。
+
+研究中出现有依据的新发现、重要未知、方案排除或会后继续推演，或成员说“记一下”“先验证”“确认采用”时，读取 [研究探索与会后推演](references/workflows.md#研究探索与会后推演)。在本次请求或已确认配置的授权范围内及时留痕：有价值的探索先记录，明确确认后才记为决定；docs 保存主题记录，已授权的每日总结将增量同步到配置指定的团队频道。保存和发送状态分别核实，失败记录留待续办。
 
 ## 资料索引与代码图
 

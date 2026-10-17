@@ -34,7 +34,16 @@
     "drive_folder": null,
     "code_repositories": []
   },
-  "collaboration_policy": null,
+  "collaboration_policy": {
+    "knowledge_capture": {
+      "enabled": null,
+      "rules_document": null,
+      "research_home": null,
+      "outbox_path": null,
+      "slack_channel_id": null,
+      "authorization_source": null
+    }
+  },
   "approval_rules_source": null,
   "verified_at": null
 }
